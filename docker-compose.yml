@@ -1,0 +1,38 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    networks:
+      - localprom
+      - web
+    #ports:
+    #  - 9090:9090
+    labels:
+      - "traefik.enable=true"
+      - "traefix.docker.network=web"
+      - "traefik.http.routers.prometheus.entryPoints=https"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.nothing2seehere.duckdns.org`)"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+      - "traefik.http.routers.prometheus.middlewares=internal-ipallowlist@file"    
+  
+#  node-exporter:
+#    image: prom/node-exporter
+#    networks:
+#      - localprom
+#      - web
+#    #ports:
+#    #  - 9100:9100
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefix.docker.network=web"
+#      - "traefik.http.routers.node_exporter.entryPoints=https"
+#      - "traefik.http.routers.node_exporter.rule=Host(`node_exporter.nothing2seehere.duckdns.org`)"
+#      - "traefik.http.services.node_exporter.loadbalancer.server.port=9100"
+#      - "traefik.http.routers.node_exporter.middlewares=internal-ipallowlist@file"
+
+networks:
+  localprom:
+    driver: bridge
+  web:
+    external: true
