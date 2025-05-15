@@ -13,7 +13,7 @@ services:
     #  - 9091:9090
     labels:
       - "traefik.enable=true"
-      - "traefix.docker.network=web"
+      - "traefik.docker.network=web"
       - "traefik.http.routers.prometheus.entryPoints=https"
       - "traefik.http.routers.prometheus.rule=Host(`prometheus.nothing2seehere.duckdns.org`)"
       - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
