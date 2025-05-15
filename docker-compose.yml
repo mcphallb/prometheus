@@ -2,12 +2,14 @@ services:
   prometheus:
     image: prom/prometheus
     volumes:
-      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+      - type: bind
+        source: ./prometheus.yml
+        target: /etc/prometheus/prometheus.yml
     networks:
-      - localprom
       - web
+      - prometheus
     #ports:
-    #  - 9090:9090
+    #  - 9091:9090
     labels:
       - "traefik.enable=true"
       - "traefix.docker.network=web"
@@ -16,13 +18,12 @@ services:
       - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
       - "traefik.http.routers.prometheus.middlewares=internal-ipallowlist@file"    
   
-#  node-exporter:
-#    image: prom/node-exporter
-#    networks:
-#      - localprom
-#      - web
-#    #ports:
-#    #  - 9100:9100
+  node-exporter:
+    image: prom/node-exporter
+    networks:
+      - prometheus
+    ports:
+      - 9100:9100
 #    labels:
 #      - "traefik.enable=true"
 #      - "traefix.docker.network=web"
@@ -32,7 +33,7 @@ services:
 #      - "traefik.http.routers.node_exporter.middlewares=internal-ipallowlist@file"
 
 networks:
-  localprom:
-    driver: bridge
   web:
     external: true
+  prometheus:
+    name: prometheus 
